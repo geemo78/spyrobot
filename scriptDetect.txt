@@ -1,0 +1,1 @@
+D:\Projects\Python\python.exe detect.py --conf .25 --img 640 --weights D:\yolov5\runs\weights\p2.pt --source 1
