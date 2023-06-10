@@ -3,13 +3,15 @@ from time import sleep
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
-buzzer=23
-sprinkler=16
+buzzer=17
+sprinkler=16 
 GPIO.setup(buzzer,GPIO.OUT)
     
 def alarm():
-    for i in range(200):
+    for i in range(10000):
         GPIO.output(buzzer,GPIO.HIGH)
-        print ("The alarm has been activated")
+        print (f"{i}The alarm has been activated")
+
+    GPIO.output(buzzer,GPIO.LOW)     
 
 alarm()
