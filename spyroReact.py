@@ -21,4 +21,5 @@ def sprinkler():
 
     GPIO.output(buzzer,GPIO.LOW)   
 
-alarm()
+if __name__ == "__main__":
+    alarm()
