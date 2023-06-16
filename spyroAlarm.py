@@ -14,4 +14,11 @@ def alarm():
 
     GPIO.output(buzzer,GPIO.LOW)     
 
+def sprinkler():
+    for i in range(100000):
+        GPIO.output(sprinkler,GPIO.HIGH)
+        print (f"{i}The sprinkler has been activated")
+
+    GPIO.output(buzzer,GPIO.LOW)   
+
 alarm()
