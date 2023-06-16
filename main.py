@@ -1,5 +1,6 @@
 import time
 import keyboard
+import spyroSCREAM
 #from spyroAlarm import alarm
 
 #variables
@@ -42,8 +43,8 @@ while True:
     detFire = 0
     detSmoke = 0 
 
-    if danger_level == 100:
-        a = 0
+    if danger_val == 100:
+        spyroSCREAM.siren()
         #alarm()
 
     time.sleep(1)
