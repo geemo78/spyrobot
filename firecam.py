@@ -4,6 +4,8 @@ import platform
 import sys
 from time import sleep
 from pathlib import Path
+from time import sleep
+import spyroResponse
 
 import torch
 
@@ -23,13 +25,10 @@ from utils.torch_utils import select_device, smart_inference_mode
 #variables
 detection_count = 0
 
-
-
-
 @smart_inference_mode()
 def run(
-        weights= 'D:\yolov5\runs\weights\p2.pt', #ROOT / 'yolov5s.pt',  # model path or triton URL
-        source=0,                  #ROOT / 'data/images',  # file/dir/URL/glob/screen/0(webcam)
+        weights= r'C:\Users\binag\Desktop\Yolov5\runs\train\exp\weights\best.pt', #ROOT / 'yolov5s.pt',  # model path or triton URL
+        source=1,                  #ROOT / 'data/images',  # file/dir/URL/glob/screen/0(webcam)
         data=ROOT / 'data/coco128.yaml',  # dataset.yaml path
         imgsz=(640, 640),  # inference size (height, width)
         conf_thres=0.25,  # confidence threshold
@@ -153,7 +152,8 @@ def run(
 
                 if (detFire > 0) and (danger_val < 100):
                     danger_val += 10
-                elif (detFire == 0) and (danger_val > 0): danger_val -= 10
+                elif (detFire == 0) and (danger_val > 0):
+                    danger_val -= 10
 
                 #danger level update
                 if danger_val >= 100:
@@ -167,9 +167,11 @@ def run(
                 else:   
                     danger_level = 0
 
-                #if danger_level = 2:
+                if danger_level == 2:
+                    spyroResponse.alarm()
 
-                #if danger_level = 3:
+                if danger_level == 3:
+                    spyroResponse.rain()
 
                 # Write results
                 for *xyxy, conf, cls in reversed(det):
@@ -232,8 +234,8 @@ def run(
 
 def parse_opt():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--weights', nargs='+', type=str, default=ROOT / r'D:\yolov5\runs\weights\p2.pt', help='model path or triton URL')
-    parser.add_argument('--source', type=str, default=ROOT / "0", help='file/dir/URL/glob/screen/0(webcam)')
+    parser.add_argument('--weights', nargs='+', type=str, default=ROOT / r'C:\Users\binag\Desktop\Yolov5\runs\train\exp\weights\best.pt', help='model path or triton URL')
+    parser.add_argument('--source', type=str, default=ROOT / "1", help='file/dir/URL/glob/screen/0(webcam)')
     parser.add_argument('--data', type=str, default=ROOT / 'data/coco128.yaml', help='(optional) dataset.yaml path')
     parser.add_argument('--imgsz', '--img', '--img-size', nargs='+', type=int, default=[640], help='inference size h,w')
     parser.add_argument('--conf-thres', type=float, default=0.25, help='confidence threshold')
