@@ -2,24 +2,38 @@ import RPi.GPIO as GPIO
 from time import sleep
 
 GPIO.setwarnings(False)
+
+buzzer=23
+sprinkler=16
 GPIO.setmode(GPIO.BCM)
-buzzer=17
-sprinkler=16 
 GPIO.setup(buzzer,GPIO.OUT)
+GPIO.setup(sprinkler,GPIO.OUT)
+
+GPIO.output(buzzer,GPIO.HIGH)
+GPIO.output(sprinkler,GPIO.HIGH)
     
 def alarm():
-    for i in range(10000):
-        GPIO.output(buzzer,GPIO.HIGH)
-        print (f"{i}The alarm has been activated")
+    
+    GPIO.output(buzzer,GPIO.LOW)
+    print ("The alarm has been activated")
+    sleep(0.1)
+    GPIO.output(buzzer,GPIO.HIGH)
+     
 
-    GPIO.output(buzzer,GPIO.LOW)     
+def rain():
 
-def sprinkler():
-    for i in range(100000):
-        GPIO.output(sprinkler,GPIO.HIGH)
-        print (f"{i}The sprinkler has been activated")
+    GPIO.output(sprinkler,GPIO.LOW)
+    print ("The sprinkler has been activated")
 
-    GPIO.output(buzzer,GPIO.LOW)   
+def alarmrain():
+    GPIO.output(sprinkler,GPIO.LOW)
+    sleep(5)
+    GPIO.output(buzzer,GPIO.LOW)
+    sleep(3)
+    GPIO.output(buzzer,GPIO.HIGH)
+
+def norain():
+    GPIO.output(sprinkler,GPIO.HIGH)
 
 if __name__ == "__main__":
-    alarm()
+    norain()
