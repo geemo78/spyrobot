@@ -163,6 +163,7 @@ def run(
                     if save_crop:
                         save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
             
+            #count detections
             detFire = (det[:, 5] == 0).sum()
             detHuman= (det[:, 5] == 1).sum()
             detSmoke = (det[:, 5] == 2).sum()
@@ -184,11 +185,16 @@ def run(
             else:   
                 danger_level = 0
 
+            if danger_level < 2:
+                spyroResponse.norain()
+                
             if danger_level == 2:
                 spyroResponse.alarm()
+                spyroResponse.norain()
 
-            if danger_level == 3:
-                spyroResponse.rain()  
+            if danger_level >= 3:
+                spyroResponse.rain()
+                spyroResponse.alarm()
             
             # Stream results
             im0 = annotator.result()
