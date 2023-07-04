@@ -1,49 +1,43 @@
-import serial
-import os, time
 import RPi.GPIO as GPIO
+from time import sleep
 
-# Configure the serial port
-ser = serial.Serial('/dev/ttyS0', 9600, timeout=1)
+GPIO.setwarnings(False)
 
-# Function to send AT commands and get responses
-def send_command(command):
-    ser.write((command + '\r\n').encode())
-    time.sleep(0.5)
-    response = ser.read(ser.inWaiting())
-    return response.decode()
+buzzer=16
+sprinkler=23
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(buzzer,GPIO.OUT)
+GPIO.setup(sprinkler,GPIO.OUT)
 
-def check_GSM():
-    # Test the GSM module
-    ser.flushInput()
-    response = send_command('AT')
-    print(response)
+GPIO.output(buzzer,GPIO.HIGH)
+GPIO.output(sprinkler,GPIO.HIGH)
+    
+def alarm():
+    
+    GPIO.output(buzzer,GPIO.LOW)
+    print ("The alarm has been activated")
+    sleep(0.3)
+    GPIO.output(buzzer,GPIO.HIGH)
+     
 
-def send_GSM():
-    # Send an SMS
-    response = send_command('AT+CMGF=1')  # Set SMS text mode
-    print(response)
+def rain():
 
-    response = send_command('AT+CMGS="+639108452053"')  # Replace with the destination phone number
-    print(response)
+    GPIO.output(sprinkler,GPIO.LOW)
+    print ("The sprinkler has been activated")
 
-    message = "HELLO butipul do u want do do utang!"  # Replace with your message
-    ser.write((message + '\x1A').encode())  # Send the message
-    time.sleep(2)
-    response = ser.read(ser.inWaiting()).decode()
-    print(response)
+def alarmrain():
+    GPIO.output(sprinkler,GPIO.LOW)
+    sleep(5)
+    
+    GPIO.output(buzzer,GPIO.LOW)
+    sleep(3)
+    GPIO.output(buzzer,GPIO.HIGH)
 
-    ser.close()
-
-def call_GSM():
-    phone_number = "+639452073290"
-    send_command('ATD{};'.format(phone_number))  # Replace with the destination phone number
-    print("Calling...")
-    time.sleep(10)
-
-    send_command(b'ATH\r')
-    print("Hang call...")
-
-    ser.close()
+def norain():
+    GPIO.output(sprinkler,GPIO.HIGH)
 
 if __name__ == "__main__":
-    call_GSM()
+    alarm()
+    rain()
+    sleep(2)
+    norain()
