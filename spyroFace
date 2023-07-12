@@ -1,65 +1,65 @@
-import tkinter as tk
-from tkinter import *
-from PIL import ImageTk, Image
 import cv2
+import pyautogui
 import random
-import screeninfo
 from time import sleep
-
-# Get the primary monitor's size
-primary_monitor = screeninfo.get_monitors()[0]
-screen_width = primary_monitor.width
-screen_height = primary_monitor.height
-
-# Create a Tkinter window
-window = tk.Tk()
-window.title("Spyro")
-canvas = tk.Canvas(window, width=screen_width, height=screen_height)
-window.attributes('-fullscreen', True)  
+import keyboard
+import spyroCam
 
 roboState = 1
+roboEnergy = 15
+screen_width, screen_height = pyautogui.size()
+switch_key = "f"
+end_key = "e"
 
-def play_face(numFace):
-    video_path = f"roboFace{numFace}.mp4"  # Replace with the path to your video file
+cv2.namedWindow("Video", cv2.WINDOW_NORMAL)
+cv2.resizeWindow("Video", screen_width, screen_height)
+# Set the window to fullscreen
+cv2.setWindowProperty("Video", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+# Move the window to position (0, 0)
+cv2.moveWindow("Video", 0, 0)
+
+def roboPlay(face_num):
+    # Open the video file
+    video_path = f'roboFace{face_num}.mp4'
     cap = cv2.VideoCapture(video_path)
     
-    # Get the video's dimensions
-    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
- 
-    # Create a canvas to display the video frames
-    canvas.pack()
-    
+    # Check if the video file was successfully opened
+    if not cap.isOpened():
+        print("Error opening video file")
+        exit()
+
+    # Read and display the video frames
     while True:
-        # Create a Tkinter window
-        
+        # Read a frame from the video
         ret, frame = cap.read()
-        
+
+        # Check if the frame was successfully read
         if not ret:
             break
-        
-        # Convert the OpenCV frame to a PIL Image
-        image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        image = Image.fromarray(image)
-        
-        # Resize the image to match the video's dimensions
-        image = image.resize((width, height))
-        
-        # Convert the PIL Image to a Tkinter-compatible image
-        img = ImageTk.PhotoImage(image)
-        
-        # Update the canvas with the new frame
-        canvas.create_image(0, 0, anchor=tk.NW, image=img)
-        window.update()
-        
-    # Release the video capture and destroy the Tkinter window
-    cap.release()
-    print(f"The robot did face {roboState}")
-    
+
+        # Display the frame
+        cv2.imshow("Video", frame)
+
+        #Check for key press
+        key = cv2.waitKey(10) & 0xFF
+        if key == ord('q'):
+            break
+    cap.release
 
 while True:
+
+    if keyboard.is_pressed(switch_key):
+        spyroCam.run()
+    if keyboard.is_pressed(end_key):
+        print("Spyro will see you later!")
+        break
+    sleep(3)
     
-    play_face(roboState)
-        
-    roboState = random.randint(1, 8)
-    sleep(2)
+    if roboEnergy > 0:
+        roboState = random.randint(1, 7)
+        roboEnergy -=1
+    else:
+        roboState = 8
+    
+    roboPlay(roboState)
+    print(f"Spyrobot did Face {roboState}")
